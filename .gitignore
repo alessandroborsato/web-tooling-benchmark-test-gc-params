@@ -1,3 +1,4 @@
 build/*.js
 dist/
 node_modules/
+version_1.0_results/
