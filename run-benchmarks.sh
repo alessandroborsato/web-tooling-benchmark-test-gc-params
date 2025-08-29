@@ -34,16 +34,14 @@ for APP in "${APP_VALUES[@]}"; do
       if docker run --rm \
         -e NODE_OPTIONS="--max-old-space-size=$OLD --max-semi-space-size=$SEMI" \
         "$IMAGE_NAME" \
-        /bin/bash -c "npm run build -- --env.only $APP && npm run benchmark" \
+        /bin/bash -c "npm run build -- --env.only $APP" \
         npm run benchmark -- --only "$APP" \
         > "$FILE_NAME" 2>&1; then
         echo "[OK] $APP old=$OLD semi=$SEMI"
       else
         echo "[FAIL] $APP old=$OLD semi=$SEMI"
         echo "$APP old=$OLD semi=$SEMI" >> "$FAIL_LOG"
-        rm -f "$FILE_NAME"
       fi
-
     done
   done
 done
