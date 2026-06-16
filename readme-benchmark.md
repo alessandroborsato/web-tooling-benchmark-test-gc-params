@@ -158,28 +158,3 @@ Failed executions are recorded in:
 ```text
 version_1.4_results/failures.log
 ```
-
-Examples:
-
-```text
-babel old=64 semi=2
-typescript old=32 semi=4
-```
-
-or
-
-```text
-babel old=64 semi=2 (build_failed)
-```
-
----
-## Cleanup
-
-Temporary build artifacts are automatically removed:
-
-```bash
-temp_builds/
-```
-
-after completion.
-
