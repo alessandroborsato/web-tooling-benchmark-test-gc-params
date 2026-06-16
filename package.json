@@ -5,7 +5,7 @@
   "repository": "https://github.com/v8/web-tooling-benchmark",
   "main": "src/cli.js",
   "scripts": {
-    "benchmark": "node dist/cli.js",
+    "benchmark": "node --trace-gc dist/cli.js",
     "build:terser-bundled": "node node_modules/terser/bin/uglifyjs -b preamble=\"'const Terser = module.exports = {};'\" --self > build/terser-bundled.js",
     "build:uglify-js-bundled": "node node_modules/uglify-js/bin/uglifyjs -b preamble=\"'const UglifyJS = module.exports = {};'\" --self > build/uglify-js-bundled.js",
     "build": "webpack",
