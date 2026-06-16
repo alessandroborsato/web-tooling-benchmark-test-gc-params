@@ -1,4 +1,4 @@
-# README.md (GC testing version)
+# README.md (run-benchmark.sh)
 
 ## Node.js Memory Benchmark Framework
 
