@@ -1,3 +1,6 @@
+# GC Parameters testing with Web Tooling Benchmark
+This repository includes some small changes to the Web Tooling Benchmark in order to collect GC Trace logs and perform some iterative tests. (this part is documented at the end of this document)
+
 # Web Tooling Benchmark
 
 [![Build Status](https://travis-ci.org/v8/web-tooling-benchmark.svg?branch=master)](https://travis-ci.org/v8/web-tooling-benchmark) [![styled with prettier](https://img.shields.io/badge/styled_with-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
@@ -86,6 +89,178 @@ $ javascriptcore dist/cli.js
 $ spidermonkey dist/cli.js
 $ v8 dist/cli.js
 ```
+
+
+# Running iterative tests (with run-benchmark.sh)
+
+## Node.js Memory Benchmark Framework
+
+This project provides an automated benchmarking framework for evaluating the impact of Node.js V8 memory configuration parameters on the execution of JavaScript tooling applications.
+
+The framework systematically tests combinations of:
+
+* `--max-old-space-size`
+* `--max-semi-space-size`
+
+across multiple benchmark applications while collecting detailed memory, process, and container-level metrics.
+---
+## Quick launch?
+Ensure to activate your Docker app, configuring an application with Dockerfile here provided. (Note: runs of each application are now 100).
+Then just execute this command to start runnning the test. 
+```text
+./run-benchmark.sh
+```
+You can stop it anytime, it will start from the last combination tested. If you stop it, its suggested you manually delete the last log file produced, so you can be sure it does not contain partial results.
+Parameters to test can be adjusted directly on the _run-benchmark.sh_ file.
+After collecting all logs, you can use your favourite parser to produce data to be analyzed.
+---
+
+## Objectives
+
+The script is designed to:
+
+1. Build each benchmark application only once.
+2. Reuse build artifacts across all memory configurations.
+3. Execute benchmark runs automatically.
+4. Collect detailed runtime memory statistics (adding **--trace-gc-nvp** to the original benchmark _package.json_).
+5. Detect unstable memory configurations.
+6. Generate reproducible experimental results suitable for personal/academic research.
+
+---
+
+## Tested Applications
+
+The benchmark suite includes:
+
+| Application  |
+| ------------ |
+| acorn        |
+| babel        |
+| babel-minify |
+| babylon      |
+| buble        |
+| chai         |
+| coffeescript |
+| espree       |
+| esprima      |
+| jshint       |
+| lebab        |
+| postcss      |
+| prepack      |
+| prettier     |
+| source-map   |
+| terser       |
+| typescript   |
+| uglify-js    |
+
+---
+
+## Memory Configuration Space
+
+### Old Space
+
+Values tested:
+
+```text
+32, 48, 64, 96, 128, 192, 256, 384,
+512, 640, 768, 896, 1024, 1280,
+1536, 1792, 2048 MiB
+```
+
+### Semi Space
+
+Values tested:
+
+```text
+2, 4, 6, 8, 12, 16, 24, 32,
+48, 64, 80, 96, 128, 160, 192 MiB
+```
+
+---
+
+## Total Experimental Space
+
+```text
+18 applications
+× 17 old-space values
+× 15 semi-space values
+--------------------------------
+4590 benchmark executions
+```
+
+---
+
+## Execution Strategy
+
+Instead of rebuilding each application for every memory configuration:
+
+```text
+Build application once
+    ↓
+Store artifacts
+    ↓
+Execute all memory combinations
+    ↓
+Move to next application
+```
+
+This reduces build overhead dramatically.
+
+---
+
+## Docker Requirements
+
+The script requires:
+
+* Docker
+* Node.js benchmark image build context
+* npm build scripts
+* npm benchmark scripts
+
+Expected commands:
+
+```bash
+npm run build -- --env.only <app>
+npm run benchmark
+```
+
+---
+
+## Output Structure
+
+```text
+version_1.4_results/
+│
+├── failures.log
+│
+├── acorn/
+│   ├── old32_semi2.txt
+│   ├── old32_semi4.txt
+│   └── ...
+│
+├── babel/
+│   └── ...
+│
+└── ...
+```
+
+Each result file contains:
+
+* Benchmark output
+* V8 GC logs
+* Timing synchronization data
+* Detailed memory monitoring data
+
+---
+
+## Failure Handling
+
+Failed executions are recorded in:
+
+```text
+version_1.4_results/failures.log
+```
+
 
 To run an individual benchmark rather than the entire suite via Node, pass the
 `--only` CLI flag:
