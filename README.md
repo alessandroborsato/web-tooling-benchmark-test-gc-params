@@ -1,5 +1,5 @@
 # GC Parameters testing with Web Tooling Benchmark
-This repository includes some small changes to the Web Tooling Benchmark in order to collect GC Trace logs and perform some iterative tests. (this part is documented at the end of this document)
+This repository includes some small changes to the Web Tooling Benchmark in order to collect GC Trace logs and perform some iterative tests under different semi-space and old-space size limits. (this part is documented at the end of this document)
 
 # Web Tooling Benchmark
 
